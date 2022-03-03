@@ -1,58 +1,71 @@
-function savetoken(token){
-// whatever passes as token should save into local storage
-    if (window.localStorage){
-     localStorage.setItem("token", token);
-    }
+import React, {useState} from 'react';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Counter from './Counter.js';
+import SettingsScreen from './SettingsScreen.js';
+import Home from './Home.js';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Login from './Login.js';
+
+// import Icons from "./Icons";
+const Tab = createMaterialBottomTabNavigator();
+
+export default function App() {
+
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
+  
+  if(userLoggedIn){
+  return (
+    <NavigationContainer>
+      <Tab.Navigator
+        initialRouteName='Home'
+        activeColor='white'
+        barStyle={{ backgroundColor: 'green' }}
+      >
+        <Tab.Screen
+          name='Home'
+          component={Home}
+          options={{
+            tabBarLabel: 'Home',
+            tabBarIcon: ({ color }) => (
+              <MaterialCommunityIcons name='home' color={color} size={26} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name='Step Counter'
+          component={Counter}
+          options={{
+            tabBarLabel: 'Step Counter',
+            tabBarIcon: ({ color }) => (
+              <MaterialCommunityIcons name='watch' color={color} size={26} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name='Settings'
+          component={SettingsScreen}
+          options={{
+            tabBarLabel: 'Settings',
+            tabBarIcon: ({ color }) => (
+              <FontAwesome name='gear' color={color} size={26} />
+            ),
+          }}
+        />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+
 
 }
-
-function checkexpiredtoken(){
-// read token from local storage - check with ajax call
-    if(window.localStorage){
-    usertoken = localStorage.getItem("token", token);
-    $.ajax({
-       type: 'GET',
-        url: '/checkToken',
-        data: '{"usertoken":"' + usertoken + '"}',
-        success: function(data){savetoken(data)},
-        contentType: "application/text",
-        dataType: 'text' })
-    }
+else{
+  return <Login setUserLoggedIn = {setUserLoggedIn} />;
 }
+} 
 
-function userlogin(){
-    setuserpassword();
-    setusername();
-    $.ajax({
-        type: 'POST',
-        url: '/login',
-        data: ' {"userName":"'+ phone +'", "password":"'+ password +'"}', // or JSON.stringify ({name: 'jonas'}),
-        success: function(data) {
-            savetoken(data);
-            localStorage.removeItem("customer");
-            window.location.href = "/timer.html";
-         },
-        contentType: "application/text",
-        dataType: 'text'
-    });
-
-}
-
-function setusername(){
-    phone = $("#un").val();
-}
-
-function setuserpassword(){
-    password = $("#pw").val();
-}
-
-var enterFunction = (event) =>{
-    if (event.keyCode === 13){
-        event.preventDefault();
-        $("#loginbtn").click();
-    }
-}
-
-var passwordField = document.getElementById("pw");
-
-passwordField.addEventListener("keyup", enterFunction);
+const styles = StyleSheet.create({
+  
+});
